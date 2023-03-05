@@ -11,6 +11,18 @@ class Edge:
         self.p2 = p2
         self.tiles = []
 
+    def update(self,point,i):
+        if i == 1:
+            self.p1 = point
+            self.x1 = point[0]
+            self.y1 = point[1]
+        if i == 2:
+            self.p2 = point
+            self.x2 = point[0]
+            self.y2 = point[1]
+
+
+
     def get_length(self):
         return ((self.p1[0]-self.p2[0])**2+(self.p1[1]-self.p2[1])**2)**0.5
 
@@ -20,7 +32,7 @@ class Edge:
         
 
     def plot(self,color='r'):
-        plt.plot([self.x1,self.x2],[self.y1,self.y2],color=color,alpha=0.7)
+        plt.plot([self.x1,self.x2],[self.y1,self.y2],color,alpha=0.7)
 
     def contains_point(self,point):
         return point in [self.p1,self.p2]
