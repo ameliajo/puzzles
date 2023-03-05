@@ -28,6 +28,7 @@ class Tile:
         self.approx_y = sum(j for i, j in self.shape)/len(self.shape)
 
 
+    """
     def plot(self,show=False,color='c'):
         if len(self.shape) == 3:
             triangle_x = [tupple[0] for tupple in self.shape]
@@ -45,6 +46,24 @@ class Tile:
 
         if show:
             plt.show()
+    """
+
+    def plot(self,color='c',show=False):
+        x = []
+        y = []
+        for point in self.shape:
+            x.append(point[0])
+            y.append(point[1])
+        #plt.fill_between(x,y,0)#,color=color,alpha=0.4)
+        #plt.fill_between(x,y,0,alpha=0.2,color='b')#,color=color,alpha=0.4)
+        #facecolor=[1., alpha, alpha], interpolate=False
+        alpha = 0.5
+        plt.plot(x, y, 'o',markersize=3,  color=[1., alpha, alpha])
+        plt.fill_between(x, 0, y, facecolor=[1., alpha, alpha], interpolate=False)
+
+        if show:
+            plt.show()
+
 
 
     def find_neighbors(self,tiles):

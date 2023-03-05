@@ -80,12 +80,13 @@ class Board(object):
                 self.landlocked_tiles.append(tile.id)
 
 
+        self.surfaces     = surfaces
         self.surface_area = len(surfaces)
         self.area         = len(self.tiles_on)
         self.ratio        = self.surface_area/self.area
 
     def solve_board(self):
-        for i in range(int(len(self.tiles)*0.6)):
+        for i in range(int(len(self.tiles)*0.5)):
             best_ratio, best_option = 0, None
             for j in range(5):
                 num_illegal_moves = 0
@@ -142,6 +143,24 @@ class Board(object):
     def check_legal(self):
         if len(self.tiles_off_edge) < self.number_original_surface_tiles*0.2:
             return False
+
+        points_chosen = {}
+        for edge_id in self.surfaces:
+            edge = self.edges_dict[edge_id]
+            if edge.p1 in points_chosen:
+                points_chosen[edge.p1] += 1
+            else: 
+                points_chosen[edge.p1] =  1
+            if edge.p2 in points_chosen:
+                points_chosen[edge.p2] += 1
+            else: 
+                points_chosen[edge.p2] =  1
+
+        for point in points_chosen:
+            if points_chosen[point] > 2:
+                return False
+
+
 
         added = set([tile.id for tile in self.tiles_off_edge])
         reachable = set(added)
