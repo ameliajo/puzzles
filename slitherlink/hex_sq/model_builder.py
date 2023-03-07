@@ -1,5 +1,5 @@
 from math import sin, cos, tan, pi, atan2
-#import cairo
+import cairo
 
 # This code is from the Tiling function obtained from
 # https://github.com/fogleman/Tiling

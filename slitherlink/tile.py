@@ -20,10 +20,11 @@ class Tile:
         self.neighbors_edges = {}
 
     def update_shape(self):
-        self.shape = set()
+        shape_list = []
         for edge in self.edges:
-            self.shape.add(edge.p1)
-            self.shape.add(edge.p2)
+            shape_list.append(edge.p1)
+            shape_list.append(edge.p2)
+        self.shape = tuple(shape_list)
         self.approx_x = sum(i for i, j in self.shape)/len(self.shape)
         self.approx_y = sum(j for i, j in self.shape)/len(self.shape)
 

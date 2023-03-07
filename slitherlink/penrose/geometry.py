@@ -117,7 +117,7 @@ def setup_penrose_geometry(divisions,base,d=100):
         tiles_list.append(tile)
 
 
-    return edges_list,shape_list,tiles_list
+    return edges_list,tiles_list
 
 
 
