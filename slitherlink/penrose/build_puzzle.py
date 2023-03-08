@@ -17,7 +17,7 @@ matplotlib.rcParams['figure.figsize'] = (8, 8)
 
 
 random.seed(6)
-divisions = 2
+divisions = 4
 base      = 5             
 size      = 100
 edges,tiles_list = setup_penrose_geometry(divisions,base,d=size)
