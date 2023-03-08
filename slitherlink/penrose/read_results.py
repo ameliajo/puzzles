@@ -48,3 +48,10 @@ def read_info():
 
     return edges_list,tiles_list
 
+
+def read_solution(b):
+    solution_edges = []
+    with open('./output_files/solution.dat','r') as f:
+       solution_edges = [b.edges_dict[int(val)] for val in f.readlines()[1].split()]
+    return solution_edges
+

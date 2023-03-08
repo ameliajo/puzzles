@@ -1,5 +1,6 @@
 from misc import points_equal
-import math, cmath, cairo, random, re
+#import math, cmath, cairo, random, re
+import random
 
 class Board(object):
 
