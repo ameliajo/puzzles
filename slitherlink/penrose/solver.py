@@ -218,8 +218,7 @@ def get_loops_for_high_fill(b,this_point,high_fill):
         edges_loops.append(edges_loop)
     return edges_loops
 
-def sweep_for_unique_solutions(b,num_ambiguous_tiles,num_starting_edges,fail_immediately=True):
-    solution_edges = read_solution(b)
+def sweep_for_unique_solutions(b,num_ambiguous_tiles,num_starting_edges,solution_edges,fail_immediately=True):
 
     tiles_to_make_ambiguous = [b.tiles[t.id] for t in random.sample(b.tiles,num_ambiguous_tiles)]
     for tile in b.tiles:
@@ -259,25 +258,26 @@ def sweep_for_unique_solutions(b,num_ambiguous_tiles,num_starting_edges,fail_imm
     return tiles_to_make_ambiguous if num_failed == 0 else None
 
 
+if __name__=="__main__":
+
+    matplotlib.rcParams['figure.figsize'] = (8, 8)
+    random.seed(4)
+
+    edges_list,tiles_list = read_info()
+    b = PenroseBoard(edges_list,tiles_list)
+
+    num_ambiguous_tiles,num_starting_edges = 16, 20 # base = 5, divisions = 2
+    #num_ambiguous_tiles,num_starting_edges = 33, 20 # base = 5, divisions = 3
 
 
-matplotlib.rcParams['figure.figsize'] = (8, 8)
-random.seed(4)
 
-edges_list,tiles_list = read_info()
-b = PenroseBoard(edges_list,tiles_list)
-
-num_ambiguous_tiles,num_starting_edges = 16, 20 # base = 5, divisions = 2
-#num_ambiguous_tiles,num_starting_edges = 33, 20 # base = 5, divisions = 3
-
-
-
-tiles_to_make_ambiguous = sweep_for_unique_solutions(b,num_ambiguous_tiles,num_starting_edges)
-if tiles_to_make_ambiguous:
-    with open('output_files/ambiguous_tiles.dat','a') as f:
-        for tile in tiles_to_make_ambiguous:
-            f.write(str(tile.id)+' ')
-        f.write('\n')
+    solution_edges = read_solution(b)
+    tiles_to_make_ambiguous = sweep_for_unique_solutions(b,num_ambiguous_tiles,num_starting_edges,solution_edges)
+    if tiles_to_make_ambiguous:
+        with open('output_files/ambiguous_tiles.dat','a') as f:
+            for tile in tiles_to_make_ambiguous:
+                f.write(str(tile.id)+' ')
+            f.write('\n')
 
 
 

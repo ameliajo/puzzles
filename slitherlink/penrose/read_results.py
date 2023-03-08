@@ -4,9 +4,9 @@ sys.path.append('../')
 from edge import Edge
 from tile import Tile
 
-def read_info():
+def read_info(directory='./output_files'):
     edges_list = []
-    with open('./output_files/edges.dat','r') as f:
+    with open(directory+'/edges.dat','r') as f:
         for line in f.readlines()[1:]:
             idVal, x1, y1, x2, y2 = line.split()
             edges_list.append(Edge(int(idVal), tuple((int(x1),int(y1))),
@@ -33,7 +33,7 @@ def read_info():
         return tuple(list_tuples)
 
     tiles_list = []
-    with open('./output_files/tiles.dat','r') as f:
+    with open(directory+'/tiles.dat','r') as f:
         lines = f.readlines()[1:]
         for i in range(len(lines)):
             line = lines[i].split()
@@ -49,9 +49,18 @@ def read_info():
     return edges_list,tiles_list
 
 
-def read_solution(b):
+def read_solution(b,directory='./output_files'):
     solution_edges = []
-    with open('./output_files/solution.dat','r') as f:
+    with open(directory+'/solution.dat','r') as f:
        solution_edges = [b.edges_dict[int(val)] for val in f.readlines()[1].split()]
     return solution_edges
+
+
+def read_ambiguous_tiles(b,directory='./output_files'):
+    ambiguous_tiles = []
+    with open(directory+'/ambiguous_tiles.dat','r') as f:
+        line = f.readlines()[0]
+        ambiguous_tiles = [b.tiles[int(val)] for val in line.split()]
+    return ambiguous_tiles 
+
 

@@ -87,9 +87,9 @@ class Board(object):
         self.ratio        = self.surface_area/self.area
 
     def solve_board(self):
-        for i in range(int(len(self.tiles)*0.5)):
+        for i in range(int(len(self.tiles)*0.7)):
             best_ratio, best_option = 0, None
-            for j in range(5):
+            for j in range(4):
                 num_illegal_moves = 0
                 found_legal_move = False
                 num_landlocked = len(self.landlocked_tiles)
@@ -115,7 +115,8 @@ class Board(object):
                     if not found_legal_move:
                         self.revert_tile(tile_to_flip)
                         num_illegal_moves += 1
-                        if num_illegal_moves > 50: 
+                        if num_illegal_moves > 80: 
+                            print('quit here')
                             #fig = self.plot_board()
                             return
                 if self.ratio > best_ratio:
