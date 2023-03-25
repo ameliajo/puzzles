@@ -4,6 +4,7 @@ import matplotlib
 from geometry import *
 import sys,os
 sys.path.append('../')
+import copy
 
 from edge import Edge
 from tile import Tile
@@ -23,16 +24,17 @@ def mkdir(dirname):
 
 
 seed      = 1
-divisions = 4
-base      = 5             
+divisions = 2
+base      = 4             
 size      = 100
 
 random.seed(seed)
 edges,tiles_list = setup_penrose_geometry(divisions,base,d=size)
-num_puzzles_to_make = 5
+num_puzzles_to_make = 1
 starting_tiles = random.sample(tiles_list,num_puzzles_to_make)
-#num_ambiguous_tiles,num_starting_edges = 16, 20 # base = 5, divisions = 2
-num_ambiguous_tiles,num_starting_edges = 32, len(edges) # base = 5, divisions = 2
+#num_ambiguous_tiles,num_starting_edges = 25, len(edges) # base = 5, divisions = 2
+#num_ambiguous_tiles,num_starting_edges = 40, len(edges) # base = 5, divisions = 2
+num_ambiguous_tiles,num_starting_edges = 5, 4 # base = 5, divisions = 2
 
 dirname = 'Divisions'+str(divisions)+'_'+'Base'+str(base)+'_'+'Seed'+str(seed)+\
                                      '_'+'Ambiguous'+str(num_ambiguous_tiles)
@@ -41,41 +43,73 @@ mkdir('output_files/'+dirname)
 
 
 for i,starting_tile in enumerate(starting_tiles):
-
+    stagnant = False
     subdir = 'output_files/'+dirname+'/'+str(i+1)
+    print(subdir)
     mkdir(subdir)
 
-    edges,tiles_list = setup_penrose_geometry(divisions,base,d=size)
-    b = PenroseBoard(edges,tiles_list)
-    b.initialize_board(starting_tile)
-    b.solve_board()
+    num_ambiguous_tiles =  0
+    good_ambiguous_tiles = []
+    while not stagnant:
+        for j in range(5):
+            edges,tiles_list = setup_penrose_geometry(divisions,base,d=size)
+            b = PenroseBoard(edges,tiles_list,seed=seed)
+            b.initialize_board(starting_tile)
+            b.solve_board()
 
-    for tile in b.tiles:
-        tile.status = 0
-        tile.tally  = 0
-        for edge in tile.edges_ids:
-            if edge in b.surface_edges:
-                tile.tally += 1
+            for tile in b.tiles:
+                tile.status = 0
+                tile.tally  = 0
+                for edge in tile.edges_ids:
+                    if edge in b.surface_edges:
+                        tile.tally += 1
 
-    #b.plot(show=True)
-
-    write_results(b,directory=subdir)
-
-    #b = PenroseBoard(edges_list,tiles_list)
-    for edge in b.edges(): edge.tiles = []
-
-    solution_edges = [b.edges_dict[idVal] for idVal in b.surface_edges]
-    tiles_to_make_ambiguous = sweep_for_unique_solutions(b,num_ambiguous_tiles,
-                                            num_starting_edges,solution_edges )
-    if tiles_to_make_ambiguous:
-        with open(subdir+'/ambiguous_tiles.dat','w') as f:
-            for tile in tiles_to_make_ambiguous:
-                f.write(str(tile.id)+' ')
-            f.write('\n')
+            #b.plot(show=True)
 
 
-    for tile in b.tiles:    del tile
-    for edge in b.edges():  del edge
-    del b
+            write_results(b,directory=subdir)
+
+            #b = PenroseBoard(edges_list,tiles_list)
+            for edge in b.edges(): edge.tiles = []
+
+            solution_edges = [b.edges_dict[idVal] for idVal in b.surface_edges]
+            random.seed(j)
+            if num_ambiguous_tiles == 0:
+                tiles_to_make_ambiguous = []
+            else:
+                existing_ambiguous_tiles = [b.tiles[t_id] for t_id in good_ambiguous_tiles]
+                tiles_to_make_ambiguous = existing_ambiguous_tiles  + \
+                [b.tiles[t.id] for t in random.sample([t for t in b.tiles if t not in existing_ambiguous_tiles],1)]
+            #print([t.id for t in tiles_to_make_ambiguous])
+            #print([t.id for t in b.tiles])
+
+            tiles_to_make_ambiguous = sweep_for_unique_solutions(b,tiles_to_make_ambiguous,
+                                                    num_starting_edges,solution_edges )
+
+            plot_working_tallies(b,solution_edges,show=True)
+            print()
+            print(good_ambiguous_tiles)
+            print()
+            print(tiles_to_make_ambiguous)
+            print()
+            if tiles_to_make_ambiguous == None:
+                stagnant = True
+                print('things got stagnant')
+            else:
+                print('success, things are fine')
+                num_ambiguous_tiles += 1
+                good_ambiguous_tiles = [t.id for t in tiles_to_make_ambiguous]
+                break
+
+            for tile in b.tiles:    del tile
+            for edge in b.edges():  del edge
+            del b
+
+    with open(subdir+'/ambiguous_tiles.dat','w') as f:
+        for tile_id in good_ambiguous_tiles:
+            tile = b.tiles[tile_id]
+            f.write(str(tile.id)+' ')
+        f.write('\n')
+        adequate = True
 
 

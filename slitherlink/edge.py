@@ -31,13 +31,15 @@ class Edge:
                 x1=self.x1, y1=self.y1, x2=self.x2, y2=self.y2 )
         
 
-    def plot(self,color='r',thickness=1):
-        plt.plot([self.x1,self.x2],[self.y1,self.y2],color,alpha=0.7,
-                linewidth=thickness)
+    def plot(self,color='r',thickness=1,alpha=0.7):
+        plt.plot([self.x1,self.x2],[self.y1,self.y2],color,
+                linewidth=thickness,alpha=alpha)
 
     def contains_point(self,point):
         return point in [self.p1,self.p2]
 
+    def other_point(self,point):
+        return self.p1 if point==self.p2 else self.p2 if point==self.p1 else None
 
     def common_point(self,edge2):
         if edge2.contains_point(self.p1):

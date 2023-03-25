@@ -11,11 +11,13 @@ class Tile:
         self.id = idVal
         self.edges = edges
         self.edges_ids = sorted([edge.id for edge in edges])
+        shape = tuple(set(shape))
         self.shape = shape
         self.status = 0
         self.approx_x = sum(i for i, j in shape)/len(shape)
         self.approx_y = sum(j for i, j in shape)/len(shape)
         self.tally = 0
+        self.visible_tally = 0
 
         self.neighbors_edges = {}
 

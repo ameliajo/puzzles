@@ -50,6 +50,34 @@ class Board(object):
             else:
                 self.points_dict[edge.p2] = {edge.id}
 
+    def remove_undesirable_edges_from_point_dict(self):
+        self.initialize_no_go_edges()
+        for key in self.points_dict:
+            for edge_id in list(self.points_dict[key]):
+                if edge_id in self.no_go_edges:
+                    self.points_dict[key].remove(edge_id)
+
+        for point in self.points_dict:
+            if len(self.points_dict[point]) == 1:
+                edge_id_to_remove = self.points_dict[point].pop()
+                other_point = self.edges_dict[edge_id_to_remove].other_point(point)
+                self.points_dict[other_point].remove(edge_id_to_remove)
+
+
+
+
+    def initialize_no_go_edges(self):
+        # Make a list of the edges that are ajecent to a tile that's listed to have 
+        # zero sides filled (i.e., these are the edges we know are right out)
+        self.no_go_edges = set()
+        for tile in self.tiles:
+            if tile.visible_tally != None:
+                if tile.visible_tally == 0:
+                    for edge in tile.edges:
+                        self.no_go_edges.add(edge.id)
+
+
+
     def get_surface_area(self):
         surfaces = []
         for tile in self.tiles_on:
@@ -116,7 +144,6 @@ class Board(object):
                         self.revert_tile(tile_to_flip)
                         num_illegal_moves += 1
                         if num_illegal_moves > 80: 
-                            print('quit here')
                             #fig = self.plot_board()
                             return
                 if self.ratio > best_ratio:

@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 from edge import Edge
 from tile import Tile
 from board import Board
+import random
 
 class PenroseBoard(Board):
-    def __init__(self,edges,tiles_list):
+    def __init__(self,edges,tiles_list,seed):
         self.edges_dict  = dict()
         for edge in edges:
             self.edges_dict[edge.id] = edge
@@ -17,6 +18,8 @@ class PenroseBoard(Board):
             tile.find_neighbors(self.tiles)
 
         self.initialize_tile_ids()
+        self.seed = seed
+        random.seed(seed)
 
     def edges(self):
         return [self.edges_dict[key] for key in self.edges_dict]
@@ -24,8 +27,8 @@ class PenroseBoard(Board):
     def plot(self,show=True):
         for edge in self.edges():
             edge.plot('k-.')
-            plt.plot(edge.p1[0],edge.p1[1],'ro')
-            plt.plot(edge.p2[0],edge.p2[1],'ro')
+            #plt.plot(edge.p1[0],edge.p1[1],'ro')
+            #plt.plot(edge.p2[0],edge.p2[1],'ro')
 
         path_points = []
         for edge_id in self.surface_edges:
